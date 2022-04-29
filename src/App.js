@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Picker from 'emoji-picker-react';
 // import Emoji from 'react-emoji-render';
 import { characterBits } from './CharacterBits';
+import { Button, Form, Card } from 'react-bootstrap';
 // import 'emoji-mart/css/emoji-mart.css'
 // import { Picker } from 'emoji-mart';
 
@@ -28,7 +29,8 @@ const App = () => {
     }
   }
 
-  const generateEmojiPatternHandler = () => {
+  const generateEmojiPatternHandler = (event) => {
+    event.preventDefault();
     if (!chosenEmoji) {
       alert("please choose Emoji!");
       return;
@@ -58,8 +60,13 @@ const App = () => {
   return (
     <div className='App'>
       <h1>Emoji Pattern Generator</h1>
-      <textarea placeholder='Enter Text' rows={5} cols={50} onChange={onchangeHandler} value={userInput}></textarea>
-      <button onClick={generateEmojiPatternHandler}>Generate Pattern</button>
+      <Form onSubmit={generateEmojiPatternHandler} className="d-flex flex-column align-items-center">
+        <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
+          <Form.Label className='me'><strong>Enter Text</strong></Form.Label>
+          <Form.Control as="textarea" rows={3} placeholder="text..." onChange={onchangeHandler} value={userInput} style={{ resize: "none" }} />
+        </Form.Group>
+        <Button variant='primary' type='submit'>Generate Pattern</Button>
+      </Form>
       <h3>Select Emoji</h3>
       <Picker onEmojiClick={onEmojiClick} />
       {chosenEmoji ? (
@@ -67,13 +74,15 @@ const App = () => {
       ) : (
         <span>No emoji Chosen</span>
       )}
-      {emojiPattern ? (
-        <div>
-          <h3>output : </h3>
-          <pre className='output'>{emojiPattern}</pre>
-        </div>
-      ) : (
-        <span>No pattern</span>
+      {emojiPattern && (
+        <Card>
+          <Card.Header><h3>Pattern :</h3></Card.Header>
+          <Card.Body>
+            <div>
+              <pre className='output'>{emojiPattern}</pre>
+            </div>
+          </Card.Body>
+        </Card>
       )}
     </div>
   );
