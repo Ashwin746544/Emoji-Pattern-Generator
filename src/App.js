@@ -1,10 +1,10 @@
 import './App.css';
 
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import Picker from 'emoji-picker-react';
 // import Emoji from 'react-emoji-render';
 import { characterBits } from './CharacterBits';
-import { Button, Form, Card } from 'react-bootstrap';
+import { Button, Form, Card, OverlayTrigger, Tooltip } from 'react-bootstrap';
 // import 'emoji-mart/css/emoji-mart.css'
 // import { Picker } from 'emoji-mart';
 
@@ -12,6 +12,8 @@ const App = () => {
   const [chosenEmoji, setChosenEmoji] = useState(null);
   const [userInput, setUserInput] = useState("");
   const [emojiPattern, setEmojiPattern] = useState("");
+  const ref = useRef();
+  const [copied, setCopied] = useState(false);
 
 
   const onEmojiClick = (event, emojiObject) => {
@@ -29,8 +31,17 @@ const App = () => {
     }
   }
 
+  const copyPatternHanlder = () => {
+    setCopied(true);
+    console.log("text", ref.current.innerText);
+    navigator.clipboard.writeText(ref.current.innerText);
+  }
+
   const generateEmojiPatternHandler = (event) => {
     event.preventDefault();
+    if (copied) {
+      setCopied(false);
+    }
     if (!chosenEmoji) {
       alert("please choose Emoji!");
       return;
@@ -76,10 +87,19 @@ const App = () => {
       )}
       {emojiPattern && (
         <Card>
-          <Card.Header><h3>Pattern :</h3></Card.Header>
+          <Card.Header className='d-flex justify-content-between'>
+            <h3 className='m-0'>Pattern :</h3>
+            <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">{copied ? "Already Copied" : "Copy Pattern"}</Tooltip>}>
+              <span className="d-inline-block">
+                <Button onClick={copyPatternHanlder} className='m-0'>
+                  {copied ? "Copied" : "Copy"}
+                </Button>
+              </span>
+            </OverlayTrigger>
+          </Card.Header>
           <Card.Body>
             <div>
-              <pre className='output'>{emojiPattern}</pre>
+              <pre className='output' id="pattern-container" ref={ref}>{emojiPattern}</pre>
             </div>
           </Card.Body>
         </Card>
