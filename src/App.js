@@ -43,9 +43,9 @@ const App = () => {
 
   const getTransformedNum = (n) => {
     if (n < 1e4) return n;
-    if (n >= 1e4 && n < 1e6) return +(n / 1e3).toFixed(0) + "K";
-    if (n >= 1e6 && n < 1e9) return +(n / 1e6).toFixed(0) + "M";
-    if (n >= 1e9 && n < 1e12) return +(n / 1e9).toFixed(0) + "B";
+    if (n >= 1e4 && n < 1e6) return Math.floor((n / 1e3)) + "K";
+    if (n >= 1e6 && n < 1e9) return Math.floor((n / 1e6)) + "M";
+    if (n >= 1e9 && n < 1e12) return Math.floor((n / 1e9)) + "B";
     if (n >= 1e12) return +(n / 1e12).toFixed(0) + "T";
   }
 
@@ -102,7 +102,7 @@ const App = () => {
         <Form onSubmit={generateEmojiPatternHandler} className="d-flex flex-column align-items-start text-container">
           <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
             <Form.Label className='me'><strong>Enter Text</strong></Form.Label>
-            <Form.Control as="textarea" rows={3} placeholder="text..." onChange={onchangeHandler} value={userInput} style={{ resize: "none" }} />
+            <Form.Control as="textarea" rows={3} placeholder="Numbers Only..." onChange={onchangeHandler} value={userInput} style={{ resize: "none" }} />
           </Form.Group>
           <Button variant='primary' type='submit'>Generate Pattern</Button>
         </Form>
