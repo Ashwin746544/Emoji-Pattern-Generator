@@ -8,12 +8,15 @@ import { Button, Form, Card, OverlayTrigger, Tooltip } from 'react-bootstrap';
 // import 'emoji-mart/css/emoji-mart.css'
 // import { Picker } from 'emoji-mart';
 
+let firstInputChar = null;
+
 const App = () => {
   const [chosenEmoji, setChosenEmoji] = useState(null);
   const [userInput, setUserInput] = useState("");
   const [emojiPattern, setEmojiPattern] = useState("");
   const ref = useRef();
   const [copied, setCopied] = useState(false);
+  const [validated, setValidated] = useState(false);
 
 
   const onEmojiClick = (event, emojiObject) => {
@@ -23,11 +26,27 @@ const App = () => {
 
   const onchangeHandler = (event) => {
     const value = event.target.value.trim();
-    const lastChar = value.charCodeAt([value.length - 1]);
-    if ((lastChar >= 48 && lastChar <= 57) || (lastChar >= 65 && lastChar <= 90) || (lastChar >= 97 && lastChar <= 122) || isNaN(lastChar)) {
+    if (!firstInputChar) {
+      firstInputChar = value;
+      console.log("first character");
       setUserInput(value.toUpperCase());
+      return;
+    }
+    if (!value) {
+      firstInputChar = "";
+      setUserInput("");
+      return;
+    }
+    console.log("after first");
+    const currentInputlastChar = value.charCodeAt([value.length - 1]);
+    console.log("isSame" + firstInputChar, "=", value[value.length - 1], " ", (isNaN(firstInputChar) == isNaN(value[value.length - 1])));
+    if (
+      ((currentInputlastChar >= 48 && currentInputlastChar <= 57) || (currentInputlastChar >= 65 && currentInputlastChar <= 90) || (currentInputlastChar >= 97 && currentInputlastChar <= 122) || (isNaN(currentInputlastChar))) && (isNaN(firstInputChar) == isNaN(value[value.length - 1]))) {
+      setUserInput(value.toUpperCase());
+      console.log("valid");
     } else {
       setUserInput(prev => prev);
+      console.log("invalid");
     }
   }
 
@@ -46,20 +65,22 @@ const App = () => {
     if (n >= 1e4 && n < 1e6) return Math.floor((n / 1e3)) + "K";
     if (n >= 1e6 && n < 1e9) return Math.floor((n / 1e6)) + "M";
     if (n >= 1e9 && n < 1e12) return Math.floor((n / 1e9)) + "B";
-    if (n >= 1e12) return +(n / 1e12).toFixed(0) + "T";
+    if (n >= 1e12) return Math.floor((n / 1e12)) + "T";
   }
 
   const generateEmojiPatternHandler = (event) => {
     event.preventDefault();
+    if (event.target.checkValidity() === false) {
+      event.stopPropagation();
+      setValidated(true);
+      return;
+    }
+
     if (copied) {
       setCopied(false);
     }
     if (!chosenEmoji) {
       alert("please choose Emoji!");
-      return;
-    }
-    if (!userInput) {
-      alert("please enter text!");
       return;
     }
 
@@ -99,10 +120,13 @@ const App = () => {
         <h1>Emoji Pattern Generator</h1>
       </div>
       <div className='content-container d-flex flex-row mt-5 align-items-start justify-content-between' style={{ gridGap: "50px" }}>
-        <Form onSubmit={generateEmojiPatternHandler} className="d-flex flex-column align-items-start text-container">
+        <Form noValidate validated={validated} onSubmit={generateEmojiPatternHandler} className="d-flex flex-column align-items-start text-container">
           <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
             <Form.Label className='me'><strong>Enter Text</strong></Form.Label>
-            <Form.Control as="textarea" rows={3} placeholder="Numbers Only..." onChange={onchangeHandler} value={userInput} style={{ resize: "none" }} />
+            <Form.Control as="textarea" required maxLength={4} rows={3} placeholder="Numbers Only..." onChange={onchangeHandler} value={userInput} style={{ resize: "none" }} />
+            <Form.Control.Feedback type="invalid">
+              Please provide a valid state.
+            </Form.Control.Feedback>
           </Form.Group>
           <Button variant='primary' type='submit'>Generate Pattern</Button>
         </Form>
