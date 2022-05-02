@@ -1,29 +1,92 @@
 @import 'bootstrap/dist/css/bootstrap.min.css';
-
 .App {}
 
-.content-container {}
+.content-container {
+    display: grid;
+    grid-template-columns: auto auto;
+    place-items: center;
+}
+
+.title-container {
+    background: antiquewhite;
+    box-shadow: 1px 1px 7px black;
+    border-radius: 5px;
+}
+
+.text-container {
+    border: 1px solid lightgray;
+    width: 500px;
+}
 
 button {
-  padding: 8px;
-  margin: 10px 0;
-  cursor: pointer;
+    padding: 8px;
+    margin: 10px 0;
+    cursor: pointer;
 }
 
 .make-emojis-large {
-  font-size: 50px;
-  color: blue;
-  font-size: 30px;
+    font-size: 50px;
+    color: blue;
+    font-size: 30px;
 }
 
 .chosenEmoji {
-  margin: 10px 0;
+    margin: 10px 0;
+}
+
+.picker__container {
+    border: 1px solid #efefef;
+}
+
+.picker__container .emoji-picker-container {
+    border: none;
+}
+
+.picker__container .emoji-search {
+    margin-left: 0 !important;
+}
+
+.picker__container .emoji-picker-react {
+    width: 100%;
+}
+
+.output-container {
+    border: 1px solid gray;
+    width: 500px;
 }
 
 .output {
-  border: 1px solid lightgray;
-  padding: 20px;
-  max-width: 80vw;
-  overflow: auto;
-  display: inline-block;
+    border: 1px solid lightgray;
+    padding: 20px;
+    max-width: 80vw;
+    overflow: auto;
+    display: inline-block;
+}
+
+@media(max-width: 1100px) {
+    .text-container,
+    .output-container {
+        width: 362px;
+    }
+}
+
+@media(max-width: 800px) {
+    .content-container {
+        grid-template-columns: auto;
+    }
+    .text-container,
+    .output-container {
+        width: 500px;
+    }
+    .output-container {
+        margin-left: 0 !important;
+        margin-top: 50px;
+    }
+}
+
+@media(max-width: 576px) {
+    .text-container,
+    .output-container {
+        width: 90%;
+    }
 }
