@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/Emoji-Pattern-Generator/static/css/main.e3f8e111.css",
-    "main.js": "/Emoji-Pattern-Generator/static/js/main.529a6a1c.js",
+    "main.css": "/Emoji-Pattern-Generator/static/css/main.56e2d3f9.css",
+    "main.js": "/Emoji-Pattern-Generator/static/js/main.3970ac99.js",
     "static/js/787.dcffe708.chunk.js": "/Emoji-Pattern-Generator/static/js/787.dcffe708.chunk.js",
     "index.html": "/Emoji-Pattern-Generator/index.html",
-    "main.e3f8e111.css.map": "/Emoji-Pattern-Generator/static/css/main.e3f8e111.css.map",
-    "main.529a6a1c.js.map": "/Emoji-Pattern-Generator/static/js/main.529a6a1c.js.map",
+    "main.56e2d3f9.css.map": "/Emoji-Pattern-Generator/static/css/main.56e2d3f9.css.map",
+    "main.3970ac99.js.map": "/Emoji-Pattern-Generator/static/js/main.3970ac99.js.map",
     "787.dcffe708.chunk.js.map": "/Emoji-Pattern-Generator/static/js/787.dcffe708.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.e3f8e111.css",
-    "static/js/main.529a6a1c.js"
+    "static/css/main.56e2d3f9.css",
+    "static/js/main.3970ac99.js"
   ]
 }
