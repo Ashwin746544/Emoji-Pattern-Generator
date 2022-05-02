@@ -7,14 +7,14 @@
 }
 
 .title-container {
-
   box-shadow: 1px 1px 7px #0d6efd;
   border-radius: 5px;
 }
 
-.text-container {
+.form-container {
   border: 1px solid lightgray;
   width: 500px;
+  border-radius: 4px;
 }
 
 button {
@@ -34,7 +34,8 @@ button {
 }
 
 .picker__container {
-  border: 1px solid #efefef;
+  border: 1px solid #ced4da;
+  border-radius: 0.25rem;
 }
 
 .picker__container .emoji-picker-container {
@@ -64,7 +65,7 @@ button {
 
 @media(max-width: 1100px) {
 
-  .text-container,
+  .form-container,
   .output-container {
     width: 362px;
   }
@@ -75,7 +76,7 @@ button {
     grid-template-columns: auto;
   }
 
-  .text-container,
+  .form-container,
   .output-container {
     width: 500px;
   }
@@ -88,7 +89,7 @@ button {
 
 @media(max-width: 576px) {
 
-  .text-container,
+  .form-container,
   .output-container {
     width: 90%;
   }

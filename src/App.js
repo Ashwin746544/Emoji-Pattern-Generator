@@ -138,7 +138,7 @@ const App = () => {
         <Form
           noValidate
           onSubmit={generateEmojiPatternHandler}
-          className="d-flex flex-column p-2 align-items-start text-container"
+          className="d-flex flex-column p-2 align-items-start form-container"
         >
           <Form.Group
             className="mb-3 w-100"
