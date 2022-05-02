@@ -2,11 +2,8 @@ import "./App.css";
 
 import React, { useRef, useState } from "react";
 import Picker from "emoji-picker-react";
-// import Emoji from 'react-emoji-render';
 import { characterBits } from "./CharacterBits";
 import { Button, Form, Card, OverlayTrigger, Tooltip } from "react-bootstrap";
-// import 'emoji-mart/css/emoji-mart.css'
-// import { Picker } from 'emoji-mart';
 
 let firstInputChar = null;
 
@@ -16,18 +13,26 @@ const App = () => {
   const [emojiPattern, setEmojiPattern] = useState("");
   const ref = useRef();
   const [copied, setCopied] = useState(false);
-  const [validated, setValidated] = useState(false);
+  const [textError, settextError] = useState(null);
+  const [emojiError, setEmojiError] = useState(null);
 
+  //Emoji Picker Handler
   const onEmojiClick = (event, emojiObject) => {
+    if (emojiError) {
+      setEmojiError(null);
+    }
     console.log(emojiObject);
     setChosenEmoji(emojiObject);
   };
 
+  //Input Changle Handler
   const onchangeHandler = (event) => {
     const value = event.target.value.trim();
     if (!firstInputChar) {
+      if (textError) {
+        settextError(null);
+      }
       firstInputChar = value;
-      console.log("first character");
       setUserInput(value.toUpperCase());
       return;
     }
@@ -36,27 +41,24 @@ const App = () => {
       setUserInput("");
       return;
     }
-    console.log("after first");
     const currentInputlastChar = value.charCodeAt([value.length - 1]);
-    console.log(
-      "isSame" + firstInputChar,
-      "=",
-      value[value.length - 1],
-      " ",
-      isNaN(firstInputChar) == isNaN(value[value.length - 1])
-    );
+
     if (
       ((currentInputlastChar >= 48 && currentInputlastChar <= 57) ||
         (currentInputlastChar >= 65 && currentInputlastChar <= 90) ||
         (currentInputlastChar >= 97 && currentInputlastChar <= 122) ||
         isNaN(currentInputlastChar)) &&
-      isNaN(firstInputChar) == isNaN(value[value.length - 1])
+      isNaN(firstInputChar) === isNaN(value[value.length - 1])
     ) {
+      if (textError) {
+        settextError(null);
+      }
       setUserInput(value.toUpperCase());
-      console.log("valid");
     } else {
+      if (isNaN(firstInputChar) !== isNaN(value[value.length - 1])) {
+        settextError("Enter either only Digits or only Characters!");
+      }
       setUserInput((prev) => prev);
-      console.log("invalid");
     }
   };
 
@@ -65,10 +67,10 @@ const App = () => {
     let data = ref.current.innerText;
     data = data.replace(/\u2B1C/g, "      ");
     // data.replace('   ', '      ');
-    console.log("text", ref.current.innerText);
     navigator.clipboard.writeText(data);
     // navigator.clipboard.writeText(data);
   };
+
 
   const getTransformedNum = (n) => {
     if (n < 1e4) return n;
@@ -78,34 +80,33 @@ const App = () => {
     if (n >= 1e12) return Math.floor(n / 1e12) + "T";
   };
 
+  // Form Submit Hanlder
   const generateEmojiPatternHandler = (event) => {
     event.preventDefault();
-    if (event.target.checkValidity() === false) {
-      event.stopPropagation();
-      setValidated(true);
+    if (!userInput) {
+      settextError("Text must not be Empty!");
       return;
+    } else {
+      if (textError) {
+        settextError(null);
+      }
+    }
+    if (!chosenEmoji) {
+      setEmojiError("Please Select Emoji!");
+      return;
+    } else {
+      if (emojiError) {
+        setEmojiError(null);
+      }
     }
 
     if (copied) {
       setCopied(false);
     }
-    if (!chosenEmoji) {
-      alert("please choose Emoji!");
-      return;
-    }
 
-    const transformedInput = getTransformedNum(userInput);
-    console.log("transformedInput", transformedInput);
+    const transformedInput = !isNaN(userInput) ? getTransformedNum(userInput) : userInput;
 
     let mergedArray = null;
-    // [...userInput].forEach((char, index) => {
-    //   const currentBitPattent = characterBits[char];
-    //   if (!mergedArray) {
-    //     mergedArray = currentBitPattent;
-    //   } else {
-    //     mergedArray = mergedArray.map((bits, index) => bits.concat([0, ...currentBitPattent[index]]));
-    //   }
-    // });
     [...transformedInput].forEach((char, index) => {
       const currentBitPattent = characterBits[char];
       if (!mergedArray) {
@@ -121,12 +122,10 @@ const App = () => {
     mergedArray.forEach((bits) => {
       bits.forEach(
         (bit) =>
-          (actualPattern +=
-            bit === 1 ? chosenEmoji.emoji : bit === 0 ? "⬜" : bit)
+        (actualPattern +=
+          bit === 1 ? chosenEmoji.emoji : bit === 0 ? "⬜" : bit)
       );
-      // bits.forEach(bit => actualPattern += (bit === 1 ? chosenEmoji.emoji : (bit === 0 ? "ㅤ " : bit)))
     });
-    console.log(actualPattern);
     setEmojiPattern(actualPattern);
   };
 
@@ -138,7 +137,6 @@ const App = () => {
       <div className="content-container mt-5 align-items-start">
         <Form
           noValidate
-          validated={validated}
           onSubmit={generateEmojiPatternHandler}
           className="d-flex flex-column p-2 align-items-start text-container"
         >
@@ -152,15 +150,15 @@ const App = () => {
             <Form.Control
               type="text"
               required
-              maxLength={4}
-              placeholder="Numbers Only..."
+              maxLength={isNaN(firstInputChar) ? 4 : 15}
+              placeholder="Enter text..."
               onChange={onchangeHandler}
               value={userInput}
               className="w-100"
             />
-            <Form.Control.Feedback type="invalid">
-              Please provide a valid state.
-            </Form.Control.Feedback>
+            {textError && <small className="text-danger fw-bold">
+              {textError}
+            </small>}
           </Form.Group>
           <div className="emojiPicker-container text-center w-100">
             <Form.Label className="me text-start w-100">
@@ -168,14 +166,15 @@ const App = () => {
             </Form.Label>
             <div className="picker__container w-100">
               <Picker onEmojiClick={onEmojiClick} />
-              {chosenEmoji ? (
+              {chosenEmoji && (
                 <span className="chosenEmoji mt-3 d-inline-block text-center">
                   <strong>You Selected:</strong> {chosenEmoji.emoji}
                 </span>
-              ) : (
-                <span className=" d-inline-block my-2">No emoji Chosen</span>
               )}
             </div>
+            {emojiError && <div className="text-start mt-2 fw-bold"><small className="text-danger">
+              {emojiError}
+            </small></div>}
           </div>
           <Button variant="primary" className="m-auto mt-3" type="submit">
             Generate Pattern
@@ -196,7 +195,7 @@ const App = () => {
                 <span className="d-inline-block">
                   <Button
                     onClick={copyPatternHanlder}
-                    variant="success"
+                    variant="outline-success"
                     className="m-0"
                   >
                     {copied ? "Copied" : "Copy"}
