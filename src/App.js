@@ -1,6 +1,6 @@
 import "./App.css";
 
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import Picker from "emoji-picker-react";
 import { characterBits } from "./CharacterBits";
 import { Button, Form, Card, OverlayTrigger, Tooltip } from "react-bootstrap";
@@ -10,8 +10,8 @@ let firstInputChar = null;
 const App = () => {
   const [chosenEmoji, setChosenEmoji] = useState(null);
   const [userInput, setUserInput] = useState("");
-  const [emojiPattern, setEmojiPattern] = useState("");
-  const ref = useRef();
+  const [emojiPatternForPage, setEmojiPatternForPage] = useState("");
+  const [emojiPatternForTwitter, setEmojiPatternForTwitter] = useState("");
   const [copied, setCopied] = useState(false);
   const [textError, settextError] = useState(null);
   const [emojiError, setEmojiError] = useState(null);
@@ -64,12 +64,7 @@ const App = () => {
 
   const copyPatternHanlder = () => {
     setCopied(true);
-    let data = ref.current.innerText;
-    console.log(data);
-    data = data.replace(/⬜/g, " " + " " + " ");
-    // data.replace('   ', '      ');
-    navigator.clipboard.writeText(data);
-    // navigator.clipboard.writeText(data);
+    navigator.clipboard.writeText(emojiPatternForTwitter);
   };
 
 
@@ -119,25 +114,27 @@ const App = () => {
       }
     });
     mergedArray = mergedArray.map((bits, index) => bits.concat(["\n"]));
-    let actualPattern = "";
-    mergedArray.forEach((bits) => {
-      bits.forEach(
-        (bit) =>
-        (actualPattern +=
-          // bit === 1 ? chosenEmoji.emoji : bit === 0 ? "⬜" : bit)
-          // bit === 1 ? chosenEmoji.emoji : bit === 0 ? "ㅤ" : bit)
-          // bit === 1 ? chosenEmoji.emoji : bit === 0 ? String.fromCharCode("U+2003") + String.fromCharCode("U+2003") + String.fromCharCode("U+2005") : bit)
-          // bit === 1 ? chosenEmoji.emoji : bit === 0 ? "ㅤ " : bit)
-          // bit === 1 ? chosenEmoji.emoji : bit === 0 ? "ㅤ " : bit)
-          // bit === 1 ? chosenEmoji.emoji : bit === 0 ? " " + " " + " " : bit)
-          // bit === 1 ? chosenEmoji.emoji : bit === 0 ? " " + " " + " " : bit)
-          bit === 1 ? chosenEmoji.emoji : bit === 0 ? "⬜" : bit)
-        // bit === 1 ? chosenEmoji.emoji : bit === 0 ? "       " : bit)
-        // bit === 1 ? chosenEmoji.emoji : bit === 0 ? String.fromCharCode("&#8195;") + String.fromCharCode("&#8195;") : bit)
-      );
+
+
+    //for displaying in twitter
+    let actualTwitterPattern = "";
+    mergedArray.forEach(bits => {
+      // eslint-disable-next-line no-useless-concat
+      bits.forEach(bit => actualTwitterPattern += (bit === 1 ? chosenEmoji.emoji : (bit === 0 ? " " + " " + " " : bit)))
     });
-    setEmojiPattern(actualPattern);
-  };
+    console.log(actualTwitterPattern);
+    setEmojiPatternForTwitter(actualTwitterPattern);
+
+
+    //for displaying on page
+    let content = mergedArray.map(
+      (bits, i) => {
+        const firstRow = bits.map((bit, j) => <strong key={i + " " + j}>{bit === 1 ? chosenEmoji.emoji : (bit === 0 ? <span style={{ display: "inline-block", color: "red", width: "19.23px", height: "17px" }}></span> : bit)}</strong>);
+        firstRow.concat(<br />);
+        return firstRow;
+      });
+    setEmojiPatternForPage(content);
+  }
 
   return (
     <div className="App d-flex flex-column align-items-center">
@@ -191,7 +188,7 @@ const App = () => {
           </Button>
         </Form>
 
-        {emojiPattern && (
+        {emojiPatternForPage && (
           <Card className="output-container ms-5">
             <Card.Header className="d-flex justify-content-between">
               <h3 className="m-0">Pattern :</h3>
@@ -215,8 +212,8 @@ const App = () => {
             </Card.Header>
             <Card.Body>
               <div className="text-center">
-                <pre className="output" id="pattern-container" ref={ref}>
-                  {emojiPattern}
+                <pre className="output text-start mb-0" id="pattern-container">
+                  {emojiPatternForPage}
                 </pre>
               </div>
             </Card.Body>
