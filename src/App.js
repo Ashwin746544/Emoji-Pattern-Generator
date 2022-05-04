@@ -66,7 +66,7 @@ const App = () => {
     setCopied(true);
     let data = ref.current.innerText;
     console.log(data);
-    // data = data.replace(/\u2B1C/g, "      ");
+    data = data.replace(/⬜/g, " " + " " + " ");
     // data.replace('   ', '      ');
     navigator.clipboard.writeText(data);
     // navigator.clipboard.writeText(data);
@@ -129,9 +129,9 @@ const App = () => {
           // bit === 1 ? chosenEmoji.emoji : bit === 0 ? String.fromCharCode("U+2003") + String.fromCharCode("U+2003") + String.fromCharCode("U+2005") : bit)
           // bit === 1 ? chosenEmoji.emoji : bit === 0 ? "ㅤ " : bit)
           // bit === 1 ? chosenEmoji.emoji : bit === 0 ? "ㅤ " : bit)
-          // bit === 1 ? chosenEmoji.emoji : bit === 0 ? "⬜️" : bit)
           // bit === 1 ? chosenEmoji.emoji : bit === 0 ? " " + " " + " " : bit)
-          bit === 1 ? chosenEmoji.emoji : bit === 0 ? " " + " " + " " : bit)
+          // bit === 1 ? chosenEmoji.emoji : bit === 0 ? " " + " " + " " : bit)
+          bit === 1 ? chosenEmoji.emoji : bit === 0 ? "⬜" : bit)
         // bit === 1 ? chosenEmoji.emoji : bit === 0 ? "       " : bit)
         // bit === 1 ? chosenEmoji.emoji : bit === 0 ? String.fromCharCode("&#8195;") + String.fromCharCode("&#8195;") : bit)
       );
