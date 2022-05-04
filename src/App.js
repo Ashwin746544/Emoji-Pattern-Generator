@@ -65,7 +65,8 @@ const App = () => {
   const copyPatternHanlder = () => {
     setCopied(true);
     let data = ref.current.innerText;
-    data = data.replace(/\u2B1C/g, "      ");
+    console.log(data);
+    // data = data.replace(/\u2B1C/g, "      ");
     // data.replace('   ', '      ');
     navigator.clipboard.writeText(data);
     // navigator.clipboard.writeText(data);
@@ -113,7 +114,7 @@ const App = () => {
         mergedArray = currentBitPattent;
       } else {
         mergedArray = mergedArray.map((bits, index) =>
-          bits.concat([0, ...currentBitPattent[index]])
+          bits.concat(["  ", ...currentBitPattent[index]])
         );
       }
     });
@@ -123,7 +124,16 @@ const App = () => {
       bits.forEach(
         (bit) =>
         (actualPattern +=
-          bit === 1 ? chosenEmoji.emoji : bit === 0 ? "⬜" : bit)
+          // bit === 1 ? chosenEmoji.emoji : bit === 0 ? "⬜" : bit)
+          // bit === 1 ? chosenEmoji.emoji : bit === 0 ? "ㅤ" : bit)
+          // bit === 1 ? chosenEmoji.emoji : bit === 0 ? String.fromCharCode("U+2003") + String.fromCharCode("U+2003") + String.fromCharCode("U+2005") : bit)
+          // bit === 1 ? chosenEmoji.emoji : bit === 0 ? "ㅤ " : bit)
+          // bit === 1 ? chosenEmoji.emoji : bit === 0 ? "ㅤ " : bit)
+          // bit === 1 ? chosenEmoji.emoji : bit === 0 ? "⬜️" : bit)
+          // bit === 1 ? chosenEmoji.emoji : bit === 0 ? " " + " " + " " : bit)
+          bit === 1 ? chosenEmoji.emoji : bit === 0 ? " " + " " + " " : bit)
+        // bit === 1 ? chosenEmoji.emoji : bit === 0 ? "       " : bit)
+        // bit === 1 ? chosenEmoji.emoji : bit === 0 ? String.fromCharCode("&#8195;") + String.fromCharCode("&#8195;") : bit)
       );
     });
     setEmojiPattern(actualPattern);
