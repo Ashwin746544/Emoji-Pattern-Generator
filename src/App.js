@@ -1,9 +1,9 @@
 import "./App.css";
 
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import Picker from "emoji-picker-react";
 import { characterBits } from "./CharacterBits";
-import { Button, Form, Card, OverlayTrigger, Tooltip } from "react-bootstrap";
+import { Overlay, Form, Card, OverlayTrigger, Tooltip } from "react-bootstrap";
 
 let firstInputChar = null;
 
@@ -15,6 +15,9 @@ const App = () => {
   const [copied, setCopied] = useState(false);
   const [textError, settextError] = useState(null);
   const [emojiError, setEmojiError] = useState(null);
+  let textRef = useRef();
+  const emojiPickerRef = useRef();
+
 
   //Emoji Picker Handler
   const onEmojiClick = (event, emojiObject) => {
@@ -138,24 +141,26 @@ const App = () => {
 
   return (
     <div className="App d-flex flex-column align-items-center">
-      <div className="title-container mt-3 p-2">
+      <div className="title-container text-center p-2">
         <h1>Emoji Pattern Generator</h1>
       </div>
       <div className="content-container mt-5 align-items-start">
         <Form
           noValidate
           onSubmit={generateEmojiPatternHandler}
-          className="d-flex flex-column p-2 align-items-start form-container"
+          className={`d-flex flex-column align-items-start form-container ${!emojiPatternForPage && "pattern-not-exist"}`}
         >
           <Form.Group
             className="mb-3 w-100"
             controlId="exampleForm.ControlTextarea1"
+            style={{ paddingBottom: textError && "30px" }}
           >
             <Form.Label className="me">
               <strong>Enter Text</strong>
             </Form.Label>
             <Form.Control
               type="text"
+              ref={textRef}
               required
               maxLength={isNaN(firstInputChar) ? 4 : 15}
               placeholder="Enter text..."
@@ -163,15 +168,23 @@ const App = () => {
               value={userInput}
               className="w-100"
             />
-            {textError && <small className="text-danger fw-bold">
+            {/* {textError && <small className="text-danger fw-bold">
               {textError}
-            </small>}
+            </small>} */}
+            <Overlay target={textRef.current} show={textError ? true : false} placement="bottom" className="bg-danger">
+              {(props) => (
+                <Tooltip id="overlay-example" {...props} className="custom-tooltip">
+                  {textError}
+                </Tooltip>
+              )}
+            </Overlay>
+
           </Form.Group>
-          <div className="emojiPicker-container text-center w-100">
+          <div className="emojiPicker-container text-center w-100" style={{ paddingBottom: emojiError && "30px" }}>
             <Form.Label className="me text-start w-100">
               <strong>Select Emoji</strong>
             </Form.Label>
-            <div className="picker__container w-100">
+            <div className="picker__container w-100" ref={emojiPickerRef}>
               <Picker onEmojiClick={onEmojiClick} />
               {chosenEmoji && (
                 <span className="chosenEmoji mt-3 d-inline-block text-center">
@@ -179,18 +192,25 @@ const App = () => {
                 </span>
               )}
             </div>
-            {emojiError && <div className="text-start mt-2 fw-bold"><small className="text-danger">
+            {/* {emojiError && <div className="text-start mt-2 fw-bold"><small className="text-danger">
               {emojiError}
-            </small></div>}
+            </small></div>} */}
+            <Overlay target={emojiPickerRef.current} show={emojiError ? true : false} placement="bottom" className="bg-danger">
+              {(props) => (
+                <Tooltip id="overlay-example" {...props} className="custom-tooltip">
+                  {emojiError}
+                </Tooltip>
+              )}
+            </Overlay>
           </div>
-          <Button variant="primary" className="m-auto mt-3" type="submit">
+          <button variant="primary" className="m-auto mt-3 generate-btn" type="submit">
             Generate Pattern
-          </Button>
+          </button>
         </Form>
 
         {emojiPatternForPage && (
           <Card className="output-container ms-5">
-            <Card.Header className="d-flex justify-content-between">
+            <Card.Header className="d-flex justify-content-between output-header">
               <h3 className="m-0">Pattern :</h3>
               <OverlayTrigger
                 overlay={
@@ -200,19 +220,18 @@ const App = () => {
                 }
               >
                 <span className="d-inline-block">
-                  <Button
+                  <button
                     onClick={copyPatternHanlder}
-                    variant="outline-success"
-                    className="m-0"
+                    className="m-0 copy-btn"
                   >
                     {copied ? "Copied" : "Copy"}
-                  </Button>
+                  </button>
                 </span>
               </OverlayTrigger>
             </Card.Header>
             <Card.Body>
               <div className="text-center">
-                <pre className="output text-start mb-0" id="pattern-container">
+                <pre className={`output text-start mb-0 ${copied && "animate-pattern"}`} id="pattern-container">
                   {emojiPatternForPage}
                 </pre>
               </div>
